@@ -28,12 +28,12 @@ public class WaitForPlayersScreen : MonoBehaviour
 
     private void OnPlayerLeft(int playerIndex)
     {
-        PlayerJoined(playerIndex);
+        PlayerLeft(playerIndex);
     }
 
     private void OnPlayerJoined(int playerIndex)
     {
-        PlayerLeft(playerIndex);
+        PlayerJoined(playerIndex);
     }
 
     public void PlayerJoined(int playerIndex)

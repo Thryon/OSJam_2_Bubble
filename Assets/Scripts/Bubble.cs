@@ -17,6 +17,10 @@ public class Bubble : MonoBehaviour
     [SerializeField] private AnimationCurve _mergeAlphaCurve = AnimationCurve.Linear(0, 0, 1, 1);
     [SerializeField] private float _scaleAnimDuration = 1f;
     [SerializeField] private float _size = 1;
+    [SerializeField] private AnimationCurve _collisionAnimCurveX;
+    [SerializeField] private AnimationCurve _collisionAnimCurveY;
+    [SerializeField] private AnimationCurve _collisionAnimCurveZ;
+    [SerializeField] private float _collisionAnimDuration = 1f;
     [SerializeField] private Vector3 _debugStartVelocity = Vector3.zero;
     [SerializeField] private float _lifetime = 2f;
     private const float c_BaseMass = 2;
@@ -123,6 +127,19 @@ public class Bubble : MonoBehaviour
         {
             MergeWith(bubble);
         }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        PlayCollisionAnim();
+    }
+
+    private void PlayCollisionAnim()
+    {
+        _scaleTransform.localScale = Vector3.one * _size * 0.9f;
+        _scaleTransform.DOScaleX(_size, _collisionAnimDuration).SetEase(_collisionAnimCurveX);
+        _scaleTransform.DOScaleY(_size, _collisionAnimDuration).SetEase(_collisionAnimCurveY);
+        _scaleTransform.DOScaleZ(_size, _collisionAnimDuration).SetEase(_collisionAnimCurveZ);
     }
 
     private void MergeWith(Bubble bubble)

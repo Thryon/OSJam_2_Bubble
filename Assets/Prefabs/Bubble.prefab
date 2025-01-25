@@ -395,6 +395,178 @@ MonoBehaviour:
     m_RotationOrder: 4
   _scaleAnimDuration: 2
   _size: 1
+  _collisionAnimCurveX:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.09382406
+      value: 1.2596414
+      inSlope: 0.08286998
+      outSlope: 0.08286998
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.38385025
+    - serializedVersion: 3
+      time: 0.20808315
+      value: 0.8158538
+      inSlope: -0.100903094
+      outSlope: -0.100903094
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3751266
+      value: 1.043853
+      inSlope: 0.1297229
+      outSlope: 0.1297229
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7071653
+      value: 0.94598085
+      inSlope: -0.14148985
+      outSlope: -0.14148985
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _collisionAnimCurveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.17408511
+      value: 1.186607
+      inSlope: -0.045498572
+      outSlope: -0.045498572
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.2265005
+    - serializedVersion: 3
+      time: 0.25250793
+      value: 0.90006053
+      inSlope: -0.18417294
+      outSlope: -0.18417294
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.60291886
+      value: 1.0337528
+      inSlope: 0.18459967
+      outSlope: 0.18459967
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _collisionAnimCurveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.04411464
+      value: 1.0998286
+      inSlope: 0.70406854
+      outSlope: 0.70406854
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.265316
+      value: 0.7690077
+      inSlope: 0.23780292
+      outSlope: 0.23780292
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.40582693
+      value: 1.0402514
+      inSlope: 0.24153224
+      outSlope: 0.24153224
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6731023
+      value: 0.9294775
+      inSlope: -0.14703293
+      outSlope: -0.14703293
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _collisionAnimDuration: 1
   _debugStartVelocity: {x: 0, y: 0, z: 0}
   _lifetime: 2
   _mergeAndDestroyDuration: 0.1

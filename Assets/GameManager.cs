@@ -101,8 +101,8 @@ public class GameManager : MonoBehaviour
                 playerInputs.Add(playerInput);
             }
             playerInput.SwitchCurrentActionMap("UI");
+            GlobalEvents.OnPlayerJoined?.Invoke(playerInput.playerIndex);
         }
-        GlobalEvents.OnPlayerJoined?.Invoke(playerInput.playerIndex);
     }
 
     public void OnPlayerLeft(PlayerInput playerInput)
