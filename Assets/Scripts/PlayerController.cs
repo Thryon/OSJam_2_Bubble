@@ -85,20 +85,20 @@ public class PlayerController : MonoBehaviour
         // ** Jump Logic **
         if (jumpInput && isGrounded)
         {
-            Debug.Log("Jump executed: Player is grounded!");
+            //Debug.Log("Jump executed: Player is grounded!");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false; // Prevent double jumps
         }
         if (jumpInput)
         {
-            Debug.Log("Jump input detected!");
+            //Debug.Log("Jump input detected!");
         }
 
         // dash logic
         if (dashInput && Time.time > lastDashTime + dashCooldown)
         {
-            Debug.Log("Dash input detected!");
-            Debug.Log($"LookDirection: {lookDirection}");
+            //Debug.Log("Dash input detected!");
+            //Debug.Log($"LookDirection: {lookDirection}");
             lookDirection = transform.forward;
             rb.AddForce(lookDirection * dashForce, ForceMode.Impulse);
             if (dash_VFX != null && !dash_VFX.isPlaying)

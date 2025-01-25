@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -9,6 +10,7 @@ public class GunScript : MonoBehaviour
     public float minBubbleLifetime = 1f; // Speed of the projectile
     public float maxBubbleLifetime = 3f; // Speed of the projectile
     public float fireRate = 0.5f; // Time between shots
+    public float baseDamage = 1f;
     private float lastFireTime; // Tracks the last time the gun fired
 
     private bool attackInput;
@@ -18,6 +20,8 @@ public class GunScript : MonoBehaviour
 
     public float maxScale = 5f; // Maximum scale multiplier for the projectile
     [FormerlySerializedAs("chargeTime")] public float maxChargeTime = 3f; // Time required to reach max scale
+
+    
 
     private void Awake()
     {

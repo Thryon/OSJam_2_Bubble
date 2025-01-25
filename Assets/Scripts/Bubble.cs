@@ -82,7 +82,7 @@ public class Bubble : MonoBehaviour
         }
     }
 
-    private void Pop()
+    public void Pop()
     {
         Destroy(gameObject);
     }

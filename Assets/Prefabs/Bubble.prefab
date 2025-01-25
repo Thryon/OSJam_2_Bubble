@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3758480165913045567}
   m_Layer: 6
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: Bubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +39,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3047586303569052706}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 931475c6fe0586444b5b9339f01b3b81, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 913095171589133637}
   m_Layer: 8
   m_Name: Bubble
-  m_TagString: Untagged
+  m_TagString: Bubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
