@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerInputManager playerInputManager;
     [SerializeField] int minAmountOfPlayers = 2;
     [SerializeField] State startState = State.Playing;
+    [SerializeField] List<Transform> spawnPoints = new();
     
     List<PlayerInput> playerInputs = new List<PlayerInput>();
     
@@ -99,6 +100,8 @@ public class GameManager : MonoBehaviour
             if (!playerInputs.Contains(playerInput))
             {
                 playerInputs.Add(playerInput);
+                int spawnPointIndex = playerInput.playerIndex % spawnPoints.Count;
+                playerInput.transform.position = spawnPoints[spawnPointIndex].position;
             }
             playerInput.SwitchCurrentActionMap("UI");
             GlobalEvents.OnPlayerJoined?.Invoke(playerInput.playerIndex);

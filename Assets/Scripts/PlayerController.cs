@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public GunScript Gun;
 
     private Rigidbody rb;
+    private PlayerInput playerInput;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -85,7 +86,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-
+        playerInput = GetComponent<PlayerInput>();
         // Freeze rotation on physics to avoid unwanted behavior
         if (rb != null)
         {
@@ -99,11 +100,21 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
         if (moveDirection.magnitude > 0.1f)
         {
-            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
+            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
         }
 
+        Vector3 lookDirection;
+        if (playerInput.currentControlScheme == "KeyboardMouse" || playerInput.currentControlScheme == "Touch")
+        {
+            var screenToWorldLookPos = Camera.main.ScreenToWorldPoint(lookInput);;
+            lookDirection = (screenToWorldLookPos - transform.position).normalized;
+        }
+        else
+        {
+            lookDirection = new Vector3(lookInput.x, 0, lookInput.y);
+        }
         // ** Rotate Player with Right Stick **
-        Vector3 lookDirection = new Vector3(lookInput.x, 0, lookInput.y);
+         
         if (lookDirection.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
