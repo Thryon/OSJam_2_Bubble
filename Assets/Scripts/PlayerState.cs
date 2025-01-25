@@ -14,7 +14,7 @@ public class PlayerState : MonoBehaviour
     // Method to take damage
     public void TakeDamage(float damage)
     {
-        currentHealth += damage;  // Reduce health by damage amount
+        currentHealth += damage;  // add health by damage amount
         Debug.Log($"Player hit! Current health: {currentHealth}");
 
         // Check if the player is bubbled

@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;           // Movement speed
+    public float moveSpeed = 5f;          // Movement speed
     public float rotationSpeed = 720f;    // Rotation speed
     public float jumpForce = 5f;          // Force applied for jumping
     public LayerMask groundLayer;         // Layer mask to check if grounded
@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        
         if (context.performed)
         {
             lookInput = context.ReadValue<Vector2>();
@@ -49,7 +48,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        
         if (context.performed)
         {
             jumpInput = true;
@@ -62,7 +60,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        
         if (context.performed)
         {
             dashInput = true;
@@ -113,7 +110,6 @@ public class PlayerController : MonoBehaviour
             rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-
         // ** Jump Logic **
         if (jumpInput && isGrounded)
         {
@@ -154,4 +150,5 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.position + Vector3.up * 0.48f, 0.5f);
     }
+
 }

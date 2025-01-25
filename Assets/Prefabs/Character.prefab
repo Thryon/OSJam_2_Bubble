@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2319234227876734553}
   m_Layer: 0
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -409,6 +409,7 @@ MonoBehaviour:
   minBubbleLifetime: 2
   maxBubbleLifetime: 5
   fireRate: 0.5
+  baseDamage: 1
   maxScale: 5
   maxChargeTime: 3
 --- !u!1 &4976738797617173705
