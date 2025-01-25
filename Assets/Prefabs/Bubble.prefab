@@ -79,7 +79,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.1240687, y: 2.1240687, z: 2.1240687}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2926173487578901438}
@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7409435443329872338}
   - component: {fileID: 6475499930569968235}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HitTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 7479020501627074905}
   - component: {fileID: 3315658470142533615}
   - component: {fileID: 913095171589133637}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,8 +188,206 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scaleTransform: {fileID: 4220769819072585251}
   _rigidbody: {fileID: 913095171589133637}
-  _size: 1
+  _scaleAnimCurveX:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.09382406
+      value: 1.2596414
+      inSlope: 0.08286998
+      outSlope: 0.08286998
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.38385025
+    - serializedVersion: 3
+      time: 0.20808315
+      value: 0.8158538
+      inSlope: -0.100903094
+      outSlope: -0.100903094
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3751266
+      value: 1.043853
+      inSlope: 0.1297229
+      outSlope: 0.1297229
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7071653
+      value: 0.94598085
+      inSlope: -0.14148985
+      outSlope: -0.14148985
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scaleAnimCurveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.17408511
+      value: 1.186607
+      inSlope: -0.045498572
+      outSlope: -0.045498572
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.2265005
+    - serializedVersion: 3
+      time: 0.25250793
+      value: 0.90006053
+      inSlope: -0.18417294
+      outSlope: -0.18417294
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.60291886
+      value: 1.0337528
+      inSlope: 0.18459967
+      outSlope: 0.18459967
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scaleAnimCurveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.04411464
+      value: 1.0998286
+      inSlope: 0.70406854
+      outSlope: 0.70406854
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.265316
+      value: 0.7690077
+      inSlope: 0.23780292
+      outSlope: 0.23780292
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.40582693
+      value: 1.0402514
+      inSlope: 0.24153224
+      outSlope: 0.24153224
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6731023
+      value: 0.9294775
+      inSlope: -0.14703293
+      outSlope: -0.14703293
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _renderer: {fileID: 5693834927231398146}
+  _mergeAlphaCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.2704408
+      outSlope: 3.2704408
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.0375
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0.008708074
+      outSlope: -0.008708074
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.2708333
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scaleAnimDuration: 2
+  _size: 2.1240687
   _debugStartVelocity: {x: 0, y: 0, z: 0}
+  _mergeAndDestroyDuration: 0.1
 --- !u!54 &913095171589133637
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -198,8 +396,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6514433934641798115}
   serializedVersion: 4
-  m_Mass: 2
-  m_Drag: 0.3
+  m_Mass: 4.2481375
+  m_Drag: 0.1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -215,8 +413,8 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Constraints: 4
+  m_CollisionDetection: 1
 --- !u!1 &8233077987337392268
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +511,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 1990099f89c5ee94ea012d683d5cf87d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

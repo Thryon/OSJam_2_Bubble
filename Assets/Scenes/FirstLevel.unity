@@ -515,9 +515,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 913095171589133637, guid: 39e863988d7e35f49ba191e0b8c2d022, type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3315658470142533615, guid: 39e863988d7e35f49ba191e0b8c2d022, type: 3}
+      propertyPath: _size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3315658470142533615, guid: 39e863988d7e35f49ba191e0b8c2d022, type: 3}
       propertyPath: _debugStartVelocity.x
-      value: 3.86
+      value: 3.08
       objectReference: {fileID: 0}
     - target: {fileID: 3315658470142533615, guid: 39e863988d7e35f49ba191e0b8c2d022, type: 3}
       propertyPath: _debugStartVelocity.y

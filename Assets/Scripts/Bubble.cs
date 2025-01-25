@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SubsystemsImplementation;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -9,9 +10,17 @@ public class Bubble : MonoBehaviour
 {
     [SerializeField] private Transform _scaleTransform;
     [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private AnimationCurve _scaleAnimCurveX;
+    [SerializeField] private AnimationCurve _scaleAnimCurveY;
+    [SerializeField] private AnimationCurve _scaleAnimCurveZ;
+    [SerializeField] private Renderer _renderer;
+    [SerializeField] private AnimationCurve _mergeAlphaCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [SerializeField] private float _scaleAnimDuration = 1f;
     [SerializeField] private float _size = 1;
     [SerializeField] private Vector3 _debugStartVelocity = Vector3.zero;
     private const float c_BaseMass = 2;
+    private float _lifetime = 2f;
+    private float _timer = 0f;
 
     public Rigidbody Rigidbody => _rigidbody;
     public float Size => _size;
@@ -34,12 +43,44 @@ public class Bubble : MonoBehaviour
 
     private void Awake()
     {
-        _rigidbody.linearVelocity = _debugStartVelocity;
+        if (_debugStartVelocity != Vector3.zero)
+        {
+            // _rigidbody.linearVelocity = _debugStartVelocity;
+        }
+        _timer = 0f;
     }
 
     public void Update()
     {
+        if (_isMergingAndDestroying)
+        {
+            if(_bubbleToMergeInto == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            _mergeAndDestroyTimer += Time.deltaTime;
+            var color = _renderer.material.color;
+            float t = _mergeAndDestroyTimer / _mergeAndDestroyDuration;
+            color.a = Mathf.Lerp(1f, 0f, _mergeAlphaCurve.Evaluate(t));
+            _renderer.material.color = color;
+            
+            transform.position = Vector3.Lerp(_mergeStartPos, _bubbleToMergeInto.transform.position, t);
+            transform.localScale = Vector3.Lerp(_mergeStartScale, _bubbleToMergeInto._scaleTransform.localScale, t);
+            return;
+        }
         
+        _timer += Time.deltaTime;
+        if (_timer >= _lifetime)
+        {
+            Pop();
+        }
+    }
+
+    private void Pop()
+    {
+        Destroy(gameObject);
     }
 
     public void AddVelocity(Vector3 velocity)
@@ -52,7 +93,10 @@ public class Bubble : MonoBehaviour
         _size = size;
         if (!instant)
         {
-            transform.DOScale(size, .1f);
+            _scaleTransform.DOKill();
+            _scaleTransform.DOScaleX(size, _scaleAnimDuration).SetEase(_scaleAnimCurveX);
+            _scaleTransform.DOScaleY(size, _scaleAnimDuration).SetEase(_scaleAnimCurveY);
+            _scaleTransform.DOScaleZ(size, _scaleAnimDuration).SetEase(_scaleAnimCurveZ);
         }
         else
         {
@@ -71,7 +115,7 @@ public class Bubble : MonoBehaviour
             return;
         Debug.Log("OnTriggerEnter " + other.name);
         Bubble bubble = other.GetComponentInParent<Bubble>();
-        if (bubble != null)
+        if (bubble != null && !bubble._disabled && bubble != this)
         {
             MergeWith(bubble);
         }
@@ -85,8 +129,8 @@ public class Bubble : MonoBehaviour
         Vector3 selfVelocity = _rigidbody.linearVelocity;
         Vector3 otherVelocity = bubble.Rigidbody.linearVelocity;
 
-        float selfVolume = 4f/3f * Mathf.PI * Mathf.Pow(_size * 0.5f, 3);
-        float otherVolume = 4f/3f * Mathf.PI * Mathf.Pow(bubble._size * 0.5f, 3);
+        float selfVolume = 4f/3f * Mathf.PI * Mathf.Pow(_size * 0.5f, 3f);
+        float otherVolume = 4f/3f * Mathf.PI * Mathf.Pow(bubble._size * 0.5f, 3f);
         
         float totalVolume = selfVolume + otherVolume;
         float totalRadius = Mathf.Pow((totalVolume * 3f) / (4f * Mathf.PI), 1f/3f);
@@ -97,17 +141,57 @@ public class Bubble : MonoBehaviour
         Vector3 fromSelfToOther = otherPos - selfPos;
         float selfWeight = (_size / totalSize);
         float otherWeight = (bubble._size / totalSize);
-        Vector3 weightedCenter = selfPos + fromSelfToOther * otherWeight;
-        transform.position = weightedCenter;
+        Vector3 weightedCenter = selfPos + (fromSelfToOther * otherWeight + (-fromSelfToOther * selfWeight));
+        float currentY = selfPos.y;
+        // transform.position = weightedCenter;
+        if (_size < bubble._size)
+        {
+            transform.position = otherPos;
+        }
+        else
+        {
+            
+        }
         Vector3 combinedVelocity = selfVelocity * selfWeight + otherVelocity * otherWeight;
 
         float newSize = totalRadius * 2f;
         transform.localScale = new Vector3(biggestSize, biggestSize, biggestSize);
+        transform.position = new Vector3(transform.position.x, currentY + (newSize - _size) * 0.5f, transform.position.z);
         SetSize(newSize, false);
         _rigidbody.linearVelocity = combinedVelocity;
+        _lifetime = Mathf.Max(_lifetime, bubble._lifetime);
         bubble.Disable();
-        Destroy(bubble.gameObject);
+        bubble.MergeIntoAndSelfDestruct(this);
+        // Destroy(bubble.gameObject);
+        _timer = 0f;
     }
+
+    [SerializeField] private float _mergeAndDestroyDuration = 0.1f;
+    private float _mergeAndDestroyTimer = 0f;
+    private Vector3 _mergeStartScale = Vector3.zero;
+    private Vector3 _mergeStartPos = Vector3.zero;
+    private bool _isMergingAndDestroying = false;
+    private Bubble _bubbleToMergeInto = null;
+    private void MergeIntoAndSelfDestruct(Bubble bubble)
+    {
+        Disable();
+        Destroy(_rigidbody);
+        var colliders = GetComponentsInChildren<Collider>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] != null)
+            {
+                Destroy(colliders[i]);
+            }
+        }
+        _mergeStartScale = transform.localScale;
+        _mergeStartPos = transform.position;
+        _isMergingAndDestroying = true;
+        _mergeAndDestroyTimer = 0f;
+        _bubbleToMergeInto = bubble;
+        Destroy(gameObject, _mergeAndDestroyDuration);
+    }
+
     bool _disabled = false;
     private void Disable()
     {
@@ -117,7 +201,14 @@ public class Bubble : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
+        if(!_rigidbody)
+            return;
         Vector3 velocity = Application.isPlaying ? _rigidbody.linearVelocity : _debugStartVelocity;
         Gizmos.DrawLine(transform.position, transform.position + velocity);
+    }
+
+    public void SetLifetime(float lifetime)
+    {
+        _lifetime = lifetime;
     }
 }
