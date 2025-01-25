@@ -20,6 +20,7 @@ public class Bubble : MonoBehaviour
     [SerializeField] private Vector3 _debugStartVelocity = Vector3.zero;
     [SerializeField] private float _lifetime = 2f;
     private const float c_BaseMass = 2;
+    private static float s_MergeVolumeMultiplicator = 1.2f;
     private float _timer = 0f;
 
     public Rigidbody Rigidbody => _rigidbody;
@@ -134,8 +135,11 @@ public class Bubble : MonoBehaviour
 
         float selfVolume = 4f/3f * Mathf.PI * Mathf.Pow(_size * 0.5f, 3f);
         float otherVolume = 4f/3f * Mathf.PI * Mathf.Pow(bubble._size * 0.5f, 3f);
-        
-        float totalVolume = selfVolume + otherVolume;
+        float minVolume = Mathf.Min(selfVolume, otherVolume);
+        float maxVolume = Mathf.Max(selfVolume, otherVolume);
+        minVolume *= s_MergeVolumeMultiplicator;
+        float totalVolume = minVolume + maxVolume;
+        totalVolume *= s_MergeVolumeMultiplicator;
         float totalRadius = Mathf.Pow((totalVolume * 3f) / (4f * Mathf.PI), 1f/3f);
         
         float totalSize = _size + bubble._size;
