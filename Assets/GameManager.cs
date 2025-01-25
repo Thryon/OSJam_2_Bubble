@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] PlayerInputManager playerInputManager;
     [SerializeField] int minAmountOfPlayers = 2;
+    [SerializeField] State startState = State.Playing;
     
     List<PlayerInput> playerInputs = new List<PlayerInput>();
     
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        GoToState(State.WaitForPlayers);
+        GoToState(startState);
     }
 
     private void Update()
