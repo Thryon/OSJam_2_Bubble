@@ -79,7 +79,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1240687, y: 2.1240687, z: 2.1240687}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2926173487578901438}
@@ -385,8 +385,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _scaleAnimDuration: 2
-  _size: 2.1240687
+  _size: 1
   _debugStartVelocity: {x: 0, y: 0, z: 0}
+  _lifetime: 2
   _mergeAndDestroyDuration: 0.1
 --- !u!54 &913095171589133637
 Rigidbody:
@@ -396,7 +397,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6514433934641798115}
   serializedVersion: 4
-  m_Mass: 4.2481375
+  m_Mass: 1
   m_Drag: 0.1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

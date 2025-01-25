@@ -18,8 +18,8 @@ public class Bubble : MonoBehaviour
     [SerializeField] private float _scaleAnimDuration = 1f;
     [SerializeField] private float _size = 1;
     [SerializeField] private Vector3 _debugStartVelocity = Vector3.zero;
+    [SerializeField] private float _lifetime = 2f;
     private const float c_BaseMass = 2;
-    private float _lifetime = 2f;
     private float _timer = 0f;
 
     public Rigidbody Rigidbody => _rigidbody;
@@ -28,6 +28,9 @@ public class Bubble : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        if(Application.isPlaying)
+            return;
+        
         if (!_rigidbody)
         {
             _rigidbody = GetComponent<Rigidbody>();
@@ -67,7 +70,7 @@ public class Bubble : MonoBehaviour
             _renderer.material.color = color;
             
             transform.position = Vector3.Lerp(_mergeStartPos, _bubbleToMergeInto.transform.position, t);
-            transform.localScale = Vector3.Lerp(_mergeStartScale, _bubbleToMergeInto._scaleTransform.localScale, t);
+            _scaleTransform.localScale = Vector3.Lerp(_mergeStartScale, _bubbleToMergeInto._scaleTransform.localScale, t);
             return;
         }
         
@@ -106,7 +109,7 @@ public class Bubble : MonoBehaviour
         if(_rigidbody == null)
             _rigidbody = GetComponentInParent<Rigidbody>();
         #endif
-        _rigidbody.mass = c_BaseMass * size;
+        // _rigidbody.mass = c_BaseMass * size;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -155,7 +158,7 @@ public class Bubble : MonoBehaviour
         Vector3 combinedVelocity = selfVelocity * selfWeight + otherVelocity * otherWeight;
 
         float newSize = totalRadius * 2f;
-        transform.localScale = new Vector3(biggestSize, biggestSize, biggestSize);
+        _scaleTransform.localScale = new Vector3(biggestSize, biggestSize, biggestSize);
         transform.position = new Vector3(transform.position.x, currentY + (newSize - _size) * 0.5f, transform.position.z);
         SetSize(newSize, false);
         _rigidbody.linearVelocity = combinedVelocity;
@@ -184,7 +187,7 @@ public class Bubble : MonoBehaviour
                 Destroy(colliders[i]);
             }
         }
-        _mergeStartScale = transform.localScale;
+        _mergeStartScale = _scaleTransform.localScale;
         _mergeStartPos = transform.position;
         _isMergingAndDestroying = true;
         _mergeAndDestroyTimer = 0f;
