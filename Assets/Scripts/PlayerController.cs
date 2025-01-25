@@ -7,12 +7,18 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 720f;    // Rotation speed
     public float jumpForce = 5f;          // Force applied for jumping
     public LayerMask groundLayer;         // Layer mask to check if grounded
+    public float dashForce = 100f;
+    public ParticleSystem dash_VFX;
+    private float dashCooldown = 1f;
+    private float lastDashTime;
+
 
     private PlayerControls controls;      // Input actions
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
     private bool isGrounded;              // Tracks if the player is on the ground
     private bool jumpInput;               // Tracks if jump button is pressed
+    private bool dashInput;
 
     private Rigidbody rb;
 
@@ -30,6 +36,9 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.Jump.performed += ctx => jumpInput = true;
         controls.Player.Jump.canceled += ctx => jumpInput = false;
+
+        controls.Player.Dash.performed += ctx => dashInput = true;
+        controls.Player.Dash.canceled += ctx => dashInput = false;
     }
 
     private void OnEnable()
@@ -72,6 +81,7 @@ public class PlayerController : MonoBehaviour
             rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
+
         // ** Jump Logic **
         if (jumpInput && isGrounded)
         {
@@ -82,6 +92,21 @@ public class PlayerController : MonoBehaviour
         if (jumpInput)
         {
             Debug.Log("Jump input detected!");
+        }
+
+        // dash logic
+        if (dashInput && Time.time > lastDashTime + dashCooldown)
+        {
+            Debug.Log("Dash input detected!");
+            Debug.Log($"LookDirection: {lookDirection}");
+            lookDirection = transform.forward;
+            rb.AddForce(lookDirection * dashForce, ForceMode.Impulse);
+            if (dash_VFX != null && !dash_VFX.isPlaying)
+            {
+                dash_VFX.Play(); // Trigger the particle effect
+            }
+            dashInput = false;
+            lastDashTime = Time.time;
         }
     }
 
