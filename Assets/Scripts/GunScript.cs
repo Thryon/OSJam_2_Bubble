@@ -16,8 +16,6 @@ public class GunScript : MonoBehaviour
     private bool attackInput;
     private float holdTime; // Tracks how long the fire button is held
 
-    private PlayerControls controls; // Input actions
-
     public float maxScale = 5f; // Maximum scale multiplier for the projectile
     [FormerlySerializedAs("chargeTime")] public float maxChargeTime = 3f; // Time required to reach max scale
 
@@ -25,32 +23,19 @@ public class GunScript : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize the input actions
-        controls = new PlayerControls();
-
-        controls.Player.Attack.performed += ctx =>
-        {
-            attackInput = true;
-            holdTime = 0f; // Reset hold time when button is pressed
-        };
-
-        controls.Player.Attack.canceled += ctx =>
-        {
-            attackInput = false;
-            Shoot(); // Fire the projectile when the button is released
-        };
+        
     }
 
-    private void OnEnable()
+    public void StartShooting()
     {
-        // Enable the input actions
-        controls.Player.Enable();
+        attackInput = true;
+        holdTime = 0f; // Reset hold time when button is pressed
     }
 
-    private void OnDisable()
+    public void ConfirmShoot()
     {
-        // Disable the input actions
-        controls.Player.Disable();
+        attackInput = false;
+        Shoot(); // Fire the projectile when the button is released
     }
 
     void Update()

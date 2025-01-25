@@ -11,46 +11,78 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem dash_VFX;
     private float dashCooldown = 1f;
     private float lastDashTime;
-
-
-    private PlayerControls controls;      // Input actions
+    
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
     private bool isGrounded;              // Tracks if the player is on the ground
     private bool jumpInput;               // Tracks if jump button is pressed
     private bool dashInput;
 
+    public GunScript Gun;
+
     private Rigidbody rb;
 
-    private void Awake()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        // Initialize the input actions
-        controls = new PlayerControls();
-
-        // Bind input actions to methods
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-
-        controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
-        controls.Player.Look.canceled += ctx => lookInput = Vector2.zero;
-
-        controls.Player.Jump.performed += ctx => jumpInput = true;
-        controls.Player.Jump.canceled += ctx => jumpInput = false;
-
-        controls.Player.Dash.performed += ctx => dashInput = true;
-        controls.Player.Dash.canceled += ctx => dashInput = false;
+        if (context.performed)
+        {
+            moveInput = context.ReadValue<Vector2>();
+        }
+        else if (context.canceled)
+        {
+            moveInput = Vector2.zero;
+        }
     }
 
-    private void OnEnable()
+    public void OnLook(InputAction.CallbackContext context)
     {
-        // Enable the input actions
-        controls.Player.Enable();
+        
+        if (context.performed)
+        {
+            lookInput = context.ReadValue<Vector2>();
+        }
+        else if (context.canceled)
+        {
+            lookInput = Vector2.zero;
+        }
     }
 
-    private void OnDisable()
+    public void OnJump(InputAction.CallbackContext context)
     {
-        // Disable the input actions
-        controls.Player.Disable();
+        
+        if (context.performed)
+        {
+            jumpInput = true;
+        }
+        else if (context.canceled)
+        {
+            jumpInput = false;
+        }
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        
+        if (context.performed)
+        {
+            dashInput = true;
+        }
+        else if (context.canceled)
+        {
+            dashInput = false;
+        }
+    }
+
+    public void OnShoot(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Gun.StartShooting();
+        }
+        else if(context.canceled)
+        {
+            Gun.ConfirmShoot();
+        }
     }
 
     private void Start()
