@@ -5,10 +5,14 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;           // Movement speed
     public float rotationSpeed = 720f;    // Rotation speed
+    public float jumpForce = 5f;          // Force applied for jumping
+    public LayerMask groundLayer;         // Layer mask to check if grounded
 
     private PlayerControls controls;      // Input actions
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
+    private bool isGrounded;              // Tracks if the player is on the ground
+    private bool jumpInput;               // Tracks if jump button is pressed
 
     private Rigidbody rb;
 
@@ -23,6 +27,9 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
         controls.Player.Look.canceled += ctx => lookInput = Vector2.zero;
+
+        controls.Player.Jump.performed += ctx => jumpInput = true;
+        controls.Player.Jump.canceled += ctx => jumpInput = false;
     }
 
     private void OnEnable()
@@ -64,5 +71,30 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
             rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+
+        // ** Jump Logic **
+        if (jumpInput && isGrounded)
+        {
+            Debug.Log("Jump executed: Player is grounded!");
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false; // Prevent double jumps
+        }
+        if (jumpInput)
+        {
+            Debug.Log("Jump input detected!");
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        // Check if player is grounded using a small spherecast
+        isGrounded = Physics.CheckSphere(transform.position + Vector3.up * 0.48f, 0.5f, groundLayer);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Visualize the ground check in the editor
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position + Vector3.up * 0.48f, 0.5f);
     }
 }
