@@ -312,7 +312,9 @@ MonoBehaviour:
   slipperyPhysicsMaterial: {fileID: 13400000, guid: 7ba338cc5c27c714fa2c484ea53a0e97, type: 2}
   playerCollider: {fileID: 2767720382853387145}
   bubblePusherCollider: {fileID: 5005065448805882698}
+  bubblePusher: {fileID: 4115709926691135953}
   bubbleCatcher: {fileID: 9118442681927196366}
+  isStunned: 0
   Gun: {fileID: 6648623290469591876}
 --- !u!114 &2319234227876734553
 MonoBehaviour:

@@ -12,6 +12,10 @@ public class BubblePusher : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var rb = other.GetComponentInParent<Rigidbody>();
+        var playerController = other.GetComponentInParent<PlayerController>();
+        if(playerController && playerController.bubblePusher != this && !playerController.isStunned)
+            return;
+        
         if (rb)
         {
             if (collided.TryGetValue(rb, out float value))

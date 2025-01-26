@@ -24,9 +24,10 @@ public class PlayerController : MonoBehaviour
     public PhysicsMaterial slipperyPhysicsMaterial;
     public Collider playerCollider;
     public Collider bubblePusherCollider;
+    public BubblePusher bubblePusher;
     public BubbleCatcher bubbleCatcher;
     private float lastDashTime;
-    private bool isStunned = false;
+    public bool isStunned = false;
     private PlayerState playerState;
     private float stunnedTime = 3f;  // Default stun time (3 seconds)
     private float reducedStunTime = 2f;  // Reduced stun time (2 seconds)
