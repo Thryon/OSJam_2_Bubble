@@ -16,6 +16,6 @@ public class WinScreen : MonoBehaviour
         }
         Color playerColor = GameManager.Instance.GetPlayerColor(playerIndex);
         
-        winText.SetText($"<color=\"#{playerColor.ToHexString()}\"Player {playerIndex + 1}</color> wins !");
+        winText.SetText($"<color=#{playerColor.ToHexString()}>Player {playerIndex + 1}</color> wins !");
     }
 }

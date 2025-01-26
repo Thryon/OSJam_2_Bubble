@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 335582451005996595}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.88, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52,7 +52,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.67
+  m_Radius: 0.75
   m_Height: 2.4
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -249,8 +249,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.85
-  m_Height: 2.05
+  m_Radius: 0.5
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &4426578408677803094
@@ -292,8 +292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673017209e3a58f44ad2ff740cb11b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  dashSpeed: 20
+  moveSpeed: 8
+  dashSpeed: 25
   dashTurnSpeed: 50
   dashDuration: 0.2
   dashCooldown: 1
@@ -316,6 +316,7 @@ MonoBehaviour:
   bubbleCatcher: {fileID: 9118442681927196366}
   isStunned: 0
   Gun: {fileID: 6648623290469591876}
+  playerInput: {fileID: 0}
 --- !u!114 &2319234227876734553
 MonoBehaviour:
   m_ObjectHideFlags: 0

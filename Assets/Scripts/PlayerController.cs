@@ -344,6 +344,7 @@ public class PlayerController : MonoBehaviour
 
     public void Kill()
     {
+        isDead = true;
         root.gameObject.SetActive(false);
     }
 }

@@ -138,6 +138,10 @@ public class GameManager : MonoBehaviour
                 int spawnPointIndex = playerInput.playerIndex % spawnPoints.Count;
                 playerInput.transform.position = spawnPoints[spawnPointIndex].position;
                 var playerController = playerInput.GetComponent<PlayerController>();
+                if (!playerControllers.Contains(playerController))
+                {
+                    playerControllers.Add(playerController);
+                }
                 Color color = GetPlayerColor(playerInput.playerIndex);
                 playerController.playerCircleRenderer.material.color = color;
             }
