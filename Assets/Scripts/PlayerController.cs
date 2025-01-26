@@ -106,11 +106,22 @@ public class PlayerController : MonoBehaviour
         
         HandleMovement();
 
-        Vector3 lookDirection;
-        if (playerInput.currentControlScheme == "KeyboardMouse" || playerInput.currentControlScheme == "Touch")
+        Vector3 lookDirection = Vector3.zero;
+        if (playerInput.currentControlScheme == "Keyboard&Mouse" || playerInput.currentControlScheme == "Touch")
         {
-            var screenToWorldLookPos = Camera.main.ScreenToWorldPoint(lookInput);;
-            lookDirection = (screenToWorldLookPos - transform.position).normalized;
+            Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            float rayLength;
+
+            if (groundPlane.Raycast(cameraRay, out rayLength))
+            {
+                Vector3 pointToLook = cameraRay.GetPoint(rayLength);
+                Debug.DrawLine(cameraRay.origin, pointToLook, Color.cyan);
+                pointToLook.y = 0f;
+                var playerPos = transform.position;
+                playerPos.y = 0f;
+                lookDirection = (pointToLook - playerPos).normalized;
+            }
         }
         else
         {

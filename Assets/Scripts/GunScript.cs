@@ -57,7 +57,7 @@ public class GunScript : MonoBehaviour
 
         // Instantiate the projectile at the muzzle position and rotation
         GameObject projectile = Instantiate(projectilePrefab, muzzle.position + muzzle.up * (scaleMultiplier*0.5f) + muzzle.right * (scaleMultiplier*0.5f), muzzle.rotation);
-
+        projectile.transform.rotation = Quaternion.identity;
         // Apply the scale multiplier to the projectile
         Bubble bubble = projectile.GetComponent<Bubble>();
         bubble.SetSize(scaleMultiplier);
