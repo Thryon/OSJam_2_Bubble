@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public Collider bubblePusherCollider;
     public BubblePusher bubblePusher;
     public BubbleCatcher bubbleCatcher;
+    public List<Renderer> playerColorRenderers = new();
     private float lastDashTime;
     public bool isStunned = false;
     private PlayerState playerState;
@@ -121,6 +123,13 @@ public class PlayerController : MonoBehaviour
         bubblePusherCollider.enabled = false;
         playerCollider.enabled = true;
         playerCollider.material = null;
+
+        Color color = GameManager.Instance.GetPlayerColor(playerInput.playerIndex);
+        foreach (var renderer in playerColorRenderers)
+        {
+            renderer.material.color = color;
+        }
+        
         // Freeze rotation on physics to avoid unwanted behavior
         if (rb != null)
         {
