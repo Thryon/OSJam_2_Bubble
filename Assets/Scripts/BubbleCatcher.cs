@@ -1,48 +1,35 @@
+using System;
 using UnityEngine;
 
 public class BubbleCatcher : MonoBehaviour
 {
     public float baseDamage = 1f;
 
-    public bool IsFull;
+    private PlayerState playerState;
+    private void Awake()
+    {
+        playerState = GetComponentInParent<PlayerState>();
+    }
 
     private void OnTriggerEnter(Collider collider)
     {
-
-
-
         // Check if the projectile hits a player
         if (collider.gameObject.CompareTag("Bubble"))
         {
             Bubble bubble = collider.GetComponentInParent<Bubble>();
-            // Get the player's health component
-            PlayerState playerHP = GetComponentInParent<PlayerState>();
 
-            if (playerHP != null)
+            if (playerState != null && !playerState.Bubbled)
             {
                 // Calculate damage based on projectile size
-                float projectileSize = bubble.Size;  // Use scale as size
-                float damage = baseDamage * projectileSize;
+                float projectileVolume = bubble.Volume;  // Use scale as size
+                // float damage = baseDamage * projectileSize;
 
                 // Apply damage to the player
-                playerHP.TakeDamage(damage);
+                playerState.TakeDamage(projectileVolume);
             }
 
             // Destroy the projectile after hitting the player
-            bubble.Pop();
+            bubble.MergeIntoAndSelfDestruct(playerState.CurrentBubble.transform);
         }
-
-
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

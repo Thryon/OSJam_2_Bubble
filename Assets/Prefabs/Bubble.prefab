@@ -569,6 +569,7 @@ MonoBehaviour:
   _collisionAnimDuration: 1
   _debugStartVelocity: {x: 0, y: 0, z: 0}
   _lifetime: 2
+  _volume: 0.5235988
   _mergeAndDestroyDuration: 0.1
 --- !u!54 &913095171589133637
 Rigidbody:

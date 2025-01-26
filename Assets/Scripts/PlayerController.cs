@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
@@ -11,6 +12,10 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;         // Layer mask to check if grounded
     public float dashForce = 100f;
     public ParticleSystem dash_VFX;
+    public Transform root;  // Timer to track stun duration
+    public float bubbledRiseHeight = 1.5f;  // Timer to track stun duration
+    public Transform playerCircle;
+    public Renderer playerCircleRenderer;
     private float dashCooldown = 1f;
     private float lastDashTime;
     private bool isStunned = false;
@@ -82,6 +87,8 @@ public class PlayerController : MonoBehaviour
 
     public void OnShoot(InputAction.CallbackContext context)
     {
+        if(isStunned)
+            return;
         if (context.performed)
         {
             Gun.StartShooting();
@@ -106,6 +113,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Physics.Raycast(transform.position + Vector3.up * 0.01f, Vector3.down, out RaycastHit hit, 10f, groundLayer))
+        {
+            playerCircle.transform.position = hit.point + Vector3.up * 0.01f;
+            playerCircle.transform.rotation = Quaternion.identity;
+        }
+
+        float playerCircleSize = Mathf.Max(1f, playerState.CurrentBubble.transform.localScale.x);
+        playerCircle.transform.localScale = new Vector3(playerCircleSize, playerCircleSize, playerCircleSize);
+        
         if (playerState != null && !isStunned)
         {
             if(playerState.currentHealth >= playerState.playerHP)
@@ -208,11 +224,17 @@ public class PlayerController : MonoBehaviour
         // Check if player is grounded using a small spherecast
         isGrounded = Physics.CheckSphere(transform.position + Vector3.up * 0.48f, 0.5f, groundLayer);
     }
+
+    private float previousLinearDamping = 0f;
     public void StunPlayer()
     {
         isStunned = true;
         stunTimer = stunnedTime;
         rb.linearVelocity = Vector3.zero;// Set the stun timer to the full time (3s)
+        previousLinearDamping = rb.linearDamping;
+        rb.linearDamping = 0f;
+        Gun.CancelShot();
+        root.DOLocalMoveY(bubbledRiseHeight, 1f).SetEase(Ease.InOutCubic);
         Debug.Log("Player is stunned!");
     }
     // Method to unstun the player
@@ -220,6 +242,11 @@ public class PlayerController : MonoBehaviour
     {
         isStunned = false;
         Debug.Log("Player is no longer stunned.");
+        var pos = root.transform.localPosition;
+        pos.y = 0f;
+        root.transform.localPosition = pos;
+        rb.linearDamping = previousLinearDamping;
+        transform.position += Vector3.up * bubbledRiseHeight;
         // Deactivate the bubble when the player is unstunned
         if (playerState != null)
         {

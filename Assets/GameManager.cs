@@ -102,9 +102,29 @@ public class GameManager : MonoBehaviour
                 playerInputs.Add(playerInput);
                 int spawnPointIndex = playerInput.playerIndex % spawnPoints.Count;
                 playerInput.transform.position = spawnPoints[spawnPointIndex].position;
+                var playerController = playerInput.GetComponent<PlayerController>();
+                Color color = GetPlayerColor(playerInput.playerIndex);
+                playerController.playerCircleRenderer.material.color = color;
             }
             playerInput.SwitchCurrentActionMap("UI");
             GlobalEvents.OnPlayerJoined?.Invoke(playerInput.playerIndex);
+        }
+    }
+
+    private Color GetPlayerColor(int playerInputPlayerIndex)
+    {
+        switch (playerInputPlayerIndex)
+        {
+            case 0:
+                return new Color(1f, .4f, .4f);
+            case 1:
+                return new Color(.4f, .4f, 1f);
+            case 2: 
+                return new Color(.4f, 1f, .4f);
+            case 3: 
+                return new Color(1f, 1f, .4f);
+            default:
+                return Color.white;
         }
     }
 

@@ -38,6 +38,12 @@ public class GunScript : MonoBehaviour
         Shoot(); // Fire the projectile when the button is released
     }
 
+    public void CancelShot()
+    {
+        attackInput = false;
+        holdTime = 0f;
+    }
+
     void Update()
     {
         // If the fire button is held, track the hold time

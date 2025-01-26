@@ -26,9 +26,12 @@ public class Bubble : MonoBehaviour
     private const float c_BaseMass = 2;
     private static float s_MergeVolumeMultiplicator = 1.2f;
     private float _timer = 0f;
+    [SerializeField, HideInInspector]
+    private float _volume = 1;
 
     public Rigidbody Rigidbody => _rigidbody;
     public float Size => _size;
+    public float Volume => _volume;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -40,7 +43,7 @@ public class Bubble : MonoBehaviour
         {
             _rigidbody = GetComponent<Rigidbody>();
         }
-        if (_scaleTransform != null && (!Mathf.Approximately(_size, _scaleTransform.localScale.x) || !Mathf.Approximately(_rigidbody.mass, c_BaseMass * _size)))
+        if (_scaleTransform != null && (!Mathf.Approximately(_size, _scaleTransform.localScale.x) || !Mathf.Approximately(_rigidbody.mass, c_BaseMass * _size)) || _volume == 0f)
         {
             SetSize(_size);
             EditorUtility.SetDirty(this);
@@ -62,7 +65,7 @@ public class Bubble : MonoBehaviour
     {
         if (_isMergingAndDestroying)
         {
-            if(_bubbleToMergeInto == null)
+            if(_transformToMergeInto == null)
             {
                 Destroy(gameObject);
                 return;
@@ -74,8 +77,8 @@ public class Bubble : MonoBehaviour
             color.a = Mathf.Lerp(1f, 0f, _mergeAlphaCurve.Evaluate(t));
             _renderer.material.color = color;
             
-            transform.position = Vector3.Lerp(_mergeStartPos, _bubbleToMergeInto.transform.position, t);
-            _scaleTransform.localScale = Vector3.Lerp(_mergeStartScale, _bubbleToMergeInto._scaleTransform.localScale, t);
+            transform.position = Vector3.Lerp(_mergeStartPos, _transformToMergeInto.position, t);
+            _scaleTransform.localScale = Vector3.Lerp(_mergeStartScale, _transformToMergeInto.localScale, t);
             return;
         }
         
@@ -96,6 +99,11 @@ public class Bubble : MonoBehaviour
         _rigidbody.AddForce(velocity, ForceMode.Impulse);
     }
 
+    private void ComputeVolume()
+    {
+        _volume = ComputeVolumeFromRadius(_size * 0.5f);
+    }
+    
     public void SetSize(float size, bool instant = true)
     {
         _size = size;
@@ -114,6 +122,7 @@ public class Bubble : MonoBehaviour
         if(_rigidbody == null)
             _rigidbody = GetComponentInParent<Rigidbody>();
         #endif
+        ComputeVolume();
         // _rigidbody.mass = c_BaseMass * size;
     }
 
@@ -150,14 +159,14 @@ public class Bubble : MonoBehaviour
         Vector3 selfVelocity = _rigidbody.linearVelocity;
         Vector3 otherVelocity = bubble.Rigidbody.linearVelocity;
 
-        float selfVolume = 4f/3f * Mathf.PI * Mathf.Pow(_size * 0.5f, 3f);
-        float otherVolume = 4f/3f * Mathf.PI * Mathf.Pow(bubble._size * 0.5f, 3f);
+        float selfVolume = _volume;
+        float otherVolume = bubble._volume;
         float minVolume = Mathf.Min(selfVolume, otherVolume);
         float maxVolume = Mathf.Max(selfVolume, otherVolume);
         minVolume *= s_MergeVolumeMultiplicator;
         float totalVolume = minVolume + maxVolume;
         totalVolume *= s_MergeVolumeMultiplicator;
-        float totalRadius = Mathf.Pow((totalVolume * 3f) / (4f * Mathf.PI), 1f/3f);
+        float totalRadius = ComputeRadiusFromVolume(totalVolume);
         
         float totalSize = _size + bubble._size;
         float biggestSize = Mathf.Max(_size, bubble._size);
@@ -185,7 +194,7 @@ public class Bubble : MonoBehaviour
         _rigidbody.linearVelocity = combinedVelocity;
         _lifetime = Mathf.Max(_lifetime, bubble._lifetime);
         bubble.Disable();
-        bubble.MergeIntoAndSelfDestruct(this);
+        bubble.MergeIntoAndSelfDestruct(_scaleTransform);
         // Destroy(bubble.gameObject);
         _timer = 0f;
     }
@@ -195,8 +204,9 @@ public class Bubble : MonoBehaviour
     private Vector3 _mergeStartScale = Vector3.zero;
     private Vector3 _mergeStartPos = Vector3.zero;
     private bool _isMergingAndDestroying = false;
-    private Bubble _bubbleToMergeInto = null;
-    private void MergeIntoAndSelfDestruct(Bubble bubble)
+    // private Bubble _bubbleToMergeInto = null;
+    private Transform _transformToMergeInto = null;
+    public void MergeIntoAndSelfDestruct(Transform mergeIntoTransform)
     {
         Disable();
         Destroy(_rigidbody);
@@ -212,7 +222,7 @@ public class Bubble : MonoBehaviour
         _mergeStartPos = transform.position;
         _isMergingAndDestroying = true;
         _mergeAndDestroyTimer = 0f;
-        _bubbleToMergeInto = bubble;
+        _transformToMergeInto = mergeIntoTransform;
         Destroy(gameObject, _mergeAndDestroyDuration);
     }
 
@@ -234,5 +244,14 @@ public class Bubble : MonoBehaviour
     public void SetLifetime(float lifetime)
     {
         _lifetime = lifetime;
+    }
+
+    public static float ComputeVolumeFromRadius(float radius)
+    {
+        return 4f / 3f * Mathf.PI * Mathf.Pow(radius, 3f);
+    }
+    public static float ComputeRadiusFromVolume(float volume)
+    {
+        return Mathf.Pow((volume * 3f) / (4f * Mathf.PI), 1f/3f);
     }
 }
