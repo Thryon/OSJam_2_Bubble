@@ -1790,7 +1790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 2515431550479598975}
-  minAmountOfPlayers: 1
+  minAmountOfPlayers: 2
   startState: 1
   spawnPoints:
   - {fileID: 1672307345281684889}
