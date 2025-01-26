@@ -224,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   dashSpeed: 20
-  dashTurnSpeed: 1
+  dashTurnSpeed: 50
   dashDuration: 0.2
   dashCooldown: 1
   rotationSpeed: 720
@@ -591,6 +591,7 @@ MonoBehaviour:
   maxBubbleLifetime: 5
   fireRate: 0.5
   baseDamage: 1
+  minScale: 1
   maxScale: 5
   maxChargeTime: 3
 --- !u!1 &4475056509190413943

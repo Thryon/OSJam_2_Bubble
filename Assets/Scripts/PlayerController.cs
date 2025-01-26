@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;          // Movement speed
     public float dashSpeed = 10f;          // Movement speed
-    public float dashTurnSpeed = 3.14159f;          
+    public float dashTurnSpeed = 50f;          
     public float dashDuration = 0.5f;
     public float dashCooldown = 1f;
     public float rotationSpeed = 720f;    // Rotation speed
@@ -245,8 +245,9 @@ public class PlayerController : MonoBehaviour
             if (moveInput.magnitude > 0.1f)
             {
                 var targetDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+                float maxAngle = Mathf.Deg2Rad * dashTurnSpeed * Time.deltaTime;
                 // Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-                dashCurrentDirection = Vector3.RotateTowards(dashCurrentDirection, targetDirection, dashTurnSpeed * Time.deltaTime, 0f);
+                dashCurrentDirection = Vector3.RotateTowards(dashCurrentDirection, targetDirection, maxAngle, 0f);
             }
             rb.MovePosition(rb.position + dashCurrentDirection * (dashSpeed * Time.deltaTime));
         }
