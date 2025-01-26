@@ -99,12 +99,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // ** Move Player with Left Stick **
-        Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
-        if (moveDirection.magnitude > 0.1f)
+        if (playerState != null)
         {
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
+            isStunned = playerState.currentHealth >= playerState.playerHP;
         }
+        
+        HandleMovement();
 
         Vector3 lookDirection;
         if (playerInput.currentControlScheme == "KeyboardMouse" || playerInput.currentControlScheme == "Touch")
@@ -150,28 +150,22 @@ public class PlayerController : MonoBehaviour
             dashInput = false;
             lastDashTime = Time.time;
         }
-        if (playerState != null)
-        {
-            isStunned = playerState.currentHealth >= playerState.playerHP;
-        }
-
-        if (!isStunned)
-        {
-            HandleMovement();
-        }
-        else
-        {
-            Debug.Log("Player is stunned and cannot move!");
-        }
     }
 
     private void HandleMovement()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(horizontal, 0, vertical) * moveSpeed * Time.deltaTime;
-        rb.MovePosition(transform.position + movement);
+        if (isStunned)
+        {
+            Debug.Log("Player is stunned and cannot move!");
+            return;
+        }
+        
+        // ** Move Player with Left Stick **
+        Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+        if (moveDirection.magnitude > 0.1f)
+        {
+            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
+        }
     }
 
     private void FixedUpdate()
