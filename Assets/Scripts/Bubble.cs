@@ -23,6 +23,8 @@ public class Bubble : MonoBehaviour
     [SerializeField] private float _collisionAnimDuration = 1f;
     [SerializeField] private Vector3 _debugStartVelocity = Vector3.zero;
     [SerializeField] private float _lifetime = 2f;
+    [SerializeField] private Collider _collisionCollider;
+    [SerializeField] private Collider _triggerCollider;
     private const float c_BaseMass = 2;
     private static float s_MergeVolumeMultiplicator = 1.2f;
     private float _timer = 0f;
@@ -230,10 +232,14 @@ public class Bubble : MonoBehaviour
     private void Disable()
     {
         _disabled = true;
+        _collisionCollider.enabled = false;
+        _triggerCollider.enabled = false;
     }
     private void Enable()
     {
         _disabled = false;
+        _collisionCollider.enabled = true;
+        _triggerCollider.enabled = true;
     }
 
     void OnDrawGizmos()
