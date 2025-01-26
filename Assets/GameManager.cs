@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,9 +14,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<Transform> spawnPoints = new();
     
     List<PlayerInput> playerInputs = new List<PlayerInput>();
+    List<PlayerController> playerControllers = new ();
     
-    Dictionary<int, PlayerInput> playerInputsDic = new ();
     public List<PlayerInput> PlayerInputs { get => playerInputs; }
+    public List<PlayerController> PlayerControllers { get => playerControllers; }
     
     private static GameManager instance;
     public static GameManager Instance {
@@ -62,6 +65,26 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        if (CurrentState == State.Playing)
+        {
+            int alivePlayers = 0;
+            foreach (var playerController in playerControllers)
+            {
+                if(playerController == null)
+                    return;
+
+                if (!playerController.IsDead)
+                {
+                    alivePlayers++;
+                }
+            }
+
+            if (alivePlayers <= 1)
+            {
+                GoToState(State.End);
+            }
+        }
     }
 
     public void GoToState(State newState)
@@ -89,8 +112,20 @@ public class GameManager : MonoBehaviour
                 playerInput.SwitchCurrentActionMap("Player");
             }
         }
+
+        if (newState == State.End)
+        {
+            GlobalEvents.OnGameEnded?.Invoke();
+            StartCoroutine(ReloadInSeconds(4f));
+        }
         
         CurrentState = newState;
+    }
+
+    private IEnumerator ReloadInSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnPlayerJoined(PlayerInput playerInput)
@@ -111,7 +146,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Color GetPlayerColor(int playerInputPlayerIndex)
+    public Color GetPlayerColor(int playerInputPlayerIndex)
     {
         switch (playerInputPlayerIndex)
         {

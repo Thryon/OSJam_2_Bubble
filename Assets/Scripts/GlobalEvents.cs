@@ -7,4 +7,5 @@ public static class GlobalEvents
     public static UnityEvent<int> OnPlayerLeft = new();
     public static UnityEvent OnWaitForPlayersPhaseStarted = new();
     public static UnityEvent OnWaitForPlayersPhaseEnded = new();
+    public static UnityEvent OnGameEnded = new();
 }

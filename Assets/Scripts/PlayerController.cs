@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     private float stunTimer = 0f;  // Timer to track stun duration
 
     private bool isButtonPressed = false;
+    private bool isDead = false;
+    public bool IsDead => isDead;
 
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
@@ -47,7 +49,7 @@ public class PlayerController : MonoBehaviour
     public GunScript Gun;
 
     private Rigidbody rb;
-    private PlayerInput playerInput;
+    public PlayerInput playerInput;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -134,6 +136,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandlePlayerCircle();
+        if(isDead)
+            return;
+        
         HandleStartStun();
         HandleStun();
         
@@ -337,4 +342,8 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawSphere(transform.position + Vector3.up * 0.48f, 0.5f);
     }
 
+    public void Kill()
+    {
+        root.gameObject.SetActive(false);
+    }
 }
