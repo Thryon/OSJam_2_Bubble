@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem dash_VFX;
     private float dashCooldown = 1f;
     private float lastDashTime;
-    
+    private bool isStunned = false;
+    private PlayerState playerState;
+
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
     private bool isGrounded;              // Tracks if the player is on the ground
@@ -147,6 +150,28 @@ public class PlayerController : MonoBehaviour
             dashInput = false;
             lastDashTime = Time.time;
         }
+        if (playerState != null)
+        {
+            isStunned = playerState.currentHealth >= playerState.playerHP;
+        }
+
+        if (!isStunned)
+        {
+            HandleMovement();
+        }
+        else
+        {
+            Debug.Log("Player is stunned and cannot move!");
+        }
+    }
+
+    private void HandleMovement()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 movement = new Vector3(horizontal, 0, vertical) * moveSpeed * Time.deltaTime;
+        rb.MovePosition(transform.position + movement);
     }
 
     private void FixedUpdate()
