@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030c752dfab1b55488c85f92cd8ecb2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pushForce: 10
+  pushForce: 5
 --- !u!136 &5005065448805882698
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 8247900711436853731}
   - component: {fileID: 2319234227876734553}
   - component: {fileID: -7703653600251616348}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Character
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -309,6 +309,7 @@ MonoBehaviour:
   playerCircle: {fileID: 107837639834492711}
   playerCircleRenderer: {fileID: 3770173543805536775}
   bouncyPhysicsMaterial: {fileID: 13400000, guid: 931475c6fe0586444b5b9339f01b3b81, type: 2}
+  slipperyPhysicsMaterial: {fileID: 13400000, guid: 7ba338cc5c27c714fa2c484ea53a0e97, type: 2}
   playerCollider: {fileID: 2767720382853387145}
   bubblePusherCollider: {fileID: 5005065448805882698}
   bubbleCatcher: {fileID: 9118442681927196366}

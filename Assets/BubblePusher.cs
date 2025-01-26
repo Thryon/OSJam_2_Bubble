@@ -20,19 +20,18 @@ public class BubblePusher : MonoBehaviour
                 {
                     return;
                 }
-                else
-                {
-                    collided[rb] = Time.time;
-                }
+                collided[rb] = Time.time;
             }
             else
             {
                 collided.Add(rb, Time.time);
             }
+            
+            Debug.Log("Pushing " + rb.gameObject.name);
             var direction = other.transform.position - transform.position;
             direction.y = 0f;
             rb.linearVelocity = Vector3.zero;
-            rb.AddForce(direction * pushForce, ForceMode.Impulse);
+            rb.AddForce(direction * (pushForce * rb.mass), ForceMode.Impulse);
         }
     }
 }

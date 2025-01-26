@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public Transform playerCircle;
     public Renderer playerCircleRenderer;
     public PhysicsMaterial bouncyPhysicsMaterial;
+    public PhysicsMaterial slipperyPhysicsMaterial;
     public Collider playerCollider;
     public Collider bubblePusherCollider;
     public BubbleCatcher bubbleCatcher;
@@ -234,6 +235,7 @@ public class PlayerController : MonoBehaviour
             dashStartDirection = moveInput == Vector2.zero ? transform.forward : new Vector3(moveInput.x, 0, moveInput.y);
             dashCurrentDirection = dashStartDirection;
             bubblePusherCollider.enabled = true;
+            rb.useGravity = false;
             lastDashTime = Time.time;
         }
     }
@@ -244,6 +246,15 @@ public class PlayerController : MonoBehaviour
             StopDashing();
         }
     }
+    
+    private void StopDashing()
+    {
+        isDashing = false;
+        bubbleCatcher.Disabled = false;
+        bubblePusherCollider.enabled = false;
+        rb.useGravity = true;
+    }
+
     
     private void HandleMovement()
     {
@@ -292,18 +303,11 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector3.zero;// Set the stun timer to the full time (3s)
         previousLinearDamping = rb.linearDamping;
         rb.linearDamping = 0f;
-        playerCollider.material = bouncyPhysicsMaterial;
+        playerCollider.material = slipperyPhysicsMaterial;
         StopDashing();
         Gun.CancelShot();
         root.DOLocalMoveY(bubbledRiseHeight, 1f).SetEase(Ease.InOutCubic);
         Debug.Log("Player is stunned!");
-    }
-
-    private void StopDashing()
-    {
-        isDashing = false;
-        bubbleCatcher.Disabled = false;
-        bubblePusherCollider.enabled = false;
     }
 
     // Method to unstun the player
