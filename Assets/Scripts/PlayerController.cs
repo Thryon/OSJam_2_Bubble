@@ -7,6 +7,10 @@ using UnityEngine.Rendering;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;          // Movement speed
+    public float dashSpeed = 10f;          // Movement speed
+    public float dashTurnSpeed = 3.14159f;          
+    public float dashDuration = 0.5f;
+    public float dashCooldown = 1f;
     public float rotationSpeed = 720f;    // Rotation speed
     public float jumpForce = 5f;          // Force applied for jumping
     public LayerMask groundLayer;         // Layer mask to check if grounded
@@ -16,7 +20,6 @@ public class PlayerController : MonoBehaviour
     public float bubbledRiseHeight = 1.5f;  // Timer to track stun duration
     public Transform playerCircle;
     public Renderer playerCircleRenderer;
-    private float dashCooldown = 1f;
     private float lastDashTime;
     private bool isStunned = false;
     private PlayerState playerState;
@@ -31,6 +34,9 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;              // Tracks if the player is on the ground
     private bool jumpInput;               // Tracks if jump button is pressed
     private bool dashInput;
+    private bool isDashing;
+    private Vector3 dashStartDirection;
+    private Vector3 dashCurrentDirection;
 
     public GunScript Gun;
 
@@ -111,8 +117,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool IsDashing()
+    {
+        return isDashing;
+    }
+    
     private void Update()
     {
+        HandlePlayerCircle();
+        HandleStartStun();
+        HandleStun();
+        
+        if (!isStunned)
+        {
+            HandleMovement();
+        }
+        HandleLook();
+    }
+
+    private void HandleStartStun()
+    {
+        if (playerState != null && !isStunned)
+        {
+            if(playerState.currentHealth >= playerState.playerHP)
+            {
+                StunPlayer();
+            }
+        }
+    }
+
+    private void HandlePlayerCircle()
+    {
+        // Find the ground to put the player circle where it belongs
         if (Physics.Raycast(transform.position + Vector3.up * 0.01f, Vector3.down, out RaycastHit hit, 10f, groundLayer))
         {
             playerCircle.transform.position = hit.point + Vector3.up * 0.01f;
@@ -121,17 +157,32 @@ public class PlayerController : MonoBehaviour
 
         float playerCircleSize = Mathf.Max(1f, playerState.CurrentBubble.transform.localScale.x);
         playerCircle.transform.localScale = new Vector3(playerCircleSize, playerCircleSize, playerCircleSize);
-        
-        if (playerState != null && !isStunned)
+    }
+
+    private void HandleStun()
+    {
+        if (isStunned)
         {
-            if(playerState.currentHealth >= playerState.playerHP)
+            // Countdown timer for the stunned state
+            stunTimer -= Time.deltaTime;
+
+            // If the player is mashing the button, reduce stun time
+            if (isButtonPressed)
             {
-                StunPlayer();
+                stunTimer = Mathf.Max(stunTimer - Time.deltaTime, reducedStunTime);  // Reduce time, but never below 2 seconds
+                isButtonPressed = false;  // Reset the button press after applying reduction
+            }
+
+            // If stun time is over, unstun the player
+            if (stunTimer <= 0)
+            {
+                UnstunPlayer();
             }
         }
-        
-        HandleMovement();
+    }
 
+    private void HandleLook()
+    {
         Vector3 lookDirection = Vector3.zero;
         if (playerInput.currentControlScheme == "Keyboard&Mouse" || playerInput.currentControlScheme == "Touch")
         {
@@ -160,63 +211,61 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
             rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
 
-        // ** Jump Logic **
-        if (jumpInput && isGrounded)
+    private void HandleStartDash()
+    {
+        if (dashInput && Time.time > lastDashTime + dashCooldown)
         {
-            //Debug.Log("Jump executed: Player is grounded!");
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false; // Prevent double jumps
-        }
-        if (jumpInput)
-        {
-            //Debug.Log("Jump input detected!");
-        }
-
-        // dash logic
-        if (!isStunned && dashInput && Time.time > lastDashTime + dashCooldown)
-        {
-            //Debug.Log("Dash input detected!");
-            //Debug.Log($"LookDirection: {lookDirection}");
-            lookDirection = transform.forward;
-            rb.AddForce(lookDirection * dashForce, ForceMode.Impulse);
             if (dash_VFX != null && !dash_VFX.isPlaying)
             {
                 dash_VFX.Play(); // Trigger the particle effect
             }
             dashInput = false;
+            isDashing = true;
+            dashStartDirection = moveInput == Vector2.zero ? transform.forward : new Vector3(moveInput.x, 0, moveInput.y);
+            dashCurrentDirection = dashStartDirection;
             lastDashTime = Time.time;
         }
     }
+    private void HandleEndDash()
+    {
+        if (isDashing && Time.time >= lastDashTime + dashDuration)
+        {
+            isDashing = false;
+        }
+    }
+    
     private void HandleMovement()
     {
-        if (isStunned)
+        HandleStartDash();
+        HandleEndDash();
+        if (IsDashing())
         {
-            // Countdown timer for the stunned state
-            stunTimer -= Time.deltaTime;
-
-            // If the player is mashing the button, reduce stun time
-            if (isButtonPressed)
+            if (moveInput.magnitude > 0.1f)
             {
-                stunTimer = Mathf.Max(stunTimer - Time.deltaTime, reducedStunTime);  // Reduce time, but never below 2 seconds
-                isButtonPressed = false;  // Reset the button press after applying reduction
+                var targetDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+                // Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+                dashCurrentDirection = Vector3.RotateTowards(dashCurrentDirection, targetDirection, dashTurnSpeed * Time.deltaTime, 0f);
             }
-
-            // If stun time is over, unstun the player
-            if (stunTimer <= 0)
-            {
-                UnstunPlayer();
-            }
-            else
-            {
-                return;
-            }
+            rb.MovePosition(rb.position + dashCurrentDirection * (dashSpeed * Time.deltaTime));
         }
-        // ** Move Player with Left Stick **
-        Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
-        if (moveDirection.magnitude > 0.1f)
+        else
         {
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
+            // ** Move Player with Left Stick **
+            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+            if (moveDirection.magnitude > 0.1f)
+            {
+                rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
+            }
+            
+            // ** Jump Logic **
+            if (jumpInput && isGrounded)
+            {
+                //Debug.Log("Jump executed: Player is grounded!");
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                isGrounded = false; // Prevent double jumps
+            }
         }
     }
     private void FixedUpdate()
@@ -233,10 +282,17 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector3.zero;// Set the stun timer to the full time (3s)
         previousLinearDamping = rb.linearDamping;
         rb.linearDamping = 0f;
+        StopDashing();
         Gun.CancelShot();
         root.DOLocalMoveY(bubbledRiseHeight, 1f).SetEase(Ease.InOutCubic);
         Debug.Log("Player is stunned!");
     }
+
+    private void StopDashing()
+    {
+        isDashing = false;
+    }
+
     // Method to unstun the player
     private void UnstunPlayer()
     {
