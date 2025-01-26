@@ -83,11 +83,13 @@ public class Bubble : MonoBehaviour
             _scaleTransform.localScale = Vector3.Lerp(_mergeStartScale, _transformToMergeInto.localScale, t);
             return;
         }
-        
-        _timer += Time.deltaTime;
-        if (_timer >= _lifetime)
+        if (!_disabled)
         {
-            Pop();
+            _timer += Time.deltaTime;
+            if (_timer >= _lifetime)
+            {
+                Pop();
+            }
         }
     }
 
@@ -229,13 +231,13 @@ public class Bubble : MonoBehaviour
     }
 
     bool _disabled = false;
-    private void Disable()
+    public void Disable()
     {
         _disabled = true;
         _collisionCollider.enabled = false;
         _triggerCollider.enabled = false;
     }
-    private void Enable()
+    public void Enable()
     {
         _disabled = false;
         _collisionCollider.enabled = true;

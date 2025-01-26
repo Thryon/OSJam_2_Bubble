@@ -11,7 +11,9 @@ public class GunScript : MonoBehaviour
     public float maxBubbleLifetime = 3f; // Speed of the projectile
     public float fireRate = 0.5f; // Time between shots
     public float baseDamage = 1f;
+    private Bubble bubble;
     private float lastFireTime; // Tracks the last time the gun fired
+    public float minScale = 1f; 
 
     private bool attackInput;
     private float holdTime; // Tracks how long the fire button is held
@@ -28,8 +30,19 @@ public class GunScript : MonoBehaviour
 
     public void StartShooting()
     {
+        // Prevent firing too quickly
+        if (Time.time < lastFireTime + fireRate) return;
+
         attackInput = true;
         holdTime = 0f; // Reset hold time when button is pressed
+
+        // Instantiate the projectile at the muzzle position and rotation
+        GameObject projectile = Instantiate(projectilePrefab, muzzle.position + muzzle.up * (minScale * 0.5f) + muzzle.right * (minScale * 0.5f), muzzle.rotation);
+        projectile.transform.rotation = Quaternion.identity;
+        // Apply the scale multiplier to the projectile
+        bubble = projectile.GetComponent<Bubble>();
+        bubble.Disable();
+        bubble.SetSize(minScale);
     }
 
     public void ConfirmShoot()
@@ -41,6 +54,7 @@ public class GunScript : MonoBehaviour
     public void CancelShot()
     {
         attackInput = false;
+        Destroy(bubble.gameObject);
         holdTime = 0f;
     }
 
@@ -50,25 +64,20 @@ public class GunScript : MonoBehaviour
         if (attackInput)
         {
             holdTime += Time.deltaTime;
+            // Calculate the scale of the projectile based on hold time
+            float scaleMultiplier = Mathf.Lerp(minScale, maxScale, holdTime / maxChargeTime);
+            bubble.SetSize(scaleMultiplier);
+            bubble.transform.position = muzzle.position + muzzle.up * (scaleMultiplier * 0.5f) + muzzle.right * (scaleMultiplier * 0.5f);
         }
     }
 
     void Shoot()
     {
-        // Prevent firing too quickly
-        if (Time.time < lastFireTime + fireRate) return;
+        
 
-        // Calculate the scale of the projectile based on hold time
-        float scaleMultiplier = Mathf.Lerp(1f, maxScale, holdTime / maxChargeTime);
-
-        // Instantiate the projectile at the muzzle position and rotation
-        GameObject projectile = Instantiate(projectilePrefab, muzzle.position + muzzle.up * (scaleMultiplier*0.5f) + muzzle.right * (scaleMultiplier*0.5f), muzzle.rotation);
-        projectile.transform.rotation = Quaternion.identity;
-        // Apply the scale multiplier to the projectile
-        Bubble bubble = projectile.GetComponent<Bubble>();
-        bubble.SetSize(scaleMultiplier);
         float lifetime = Mathf.Lerp(minBubbleLifetime, maxBubbleLifetime, holdTime / maxChargeTime);
         bubble.SetLifetime(lifetime);
+        bubble.Enable();
         bubble.AddVelocity(muzzle.up * projectileSpeed);
 
         // Update the last fire time
