@@ -15,7 +15,8 @@ public class GunScript : MonoBehaviour
     private float lastFireTime; // Tracks the last time the gun fired
     public float minScale = 1f; 
 
-    private bool attackInput;
+    private bool requestCharge = false;
+    private bool isCharging;
     private float holdTime; // Tracks how long the fire button is held
 
     public float maxScale = 5f; // Maximum scale multiplier for the projectile
@@ -30,10 +31,51 @@ public class GunScript : MonoBehaviour
 
     public void StartShooting()
     {
-        // Prevent firing too quickly
-        if (Time.time < lastFireTime + fireRate) return;
+        requestCharge = true;
+    }
 
-        attackInput = true;
+    public void ConfirmShoot()
+    {
+        requestCharge = false;
+        if (isCharging)
+        {
+            isCharging = false;
+            Shoot(); // Fire the projectile when the button is released
+        }
+    }
+
+    public void CancelShot()
+    {
+        isCharging = false;
+        if (bubble != null)
+        {
+            Destroy(bubble.gameObject);
+        }
+        requestCharge = false;
+        holdTime = 0f;
+    }
+
+    void Update()
+    {
+        if (requestCharge && Time.time >= lastFireTime + fireRate)
+        {
+            requestCharge = false;
+            StartCharging();
+        }
+        // If the fire button is held, track the hold time
+        if (isCharging)
+        {
+            holdTime += Time.deltaTime;
+            // Calculate the scale of the projectile based on hold time
+            float scaleMultiplier = Mathf.Lerp(minScale, maxScale, holdTime / maxChargeTime);
+            bubble.SetSize(scaleMultiplier);
+            bubble.transform.position = muzzle.position + muzzle.up * (scaleMultiplier * 0.5f) + muzzle.right * (scaleMultiplier * 0.5f);
+        }
+    }
+
+    private void StartCharging()
+    {
+        isCharging = true;
         holdTime = 0f; // Reset hold time when button is pressed
 
         // Instantiate the projectile at the muzzle position and rotation
@@ -43,32 +85,6 @@ public class GunScript : MonoBehaviour
         bubble = projectile.GetComponent<Bubble>();
         bubble.Disable();
         bubble.SetSize(minScale);
-    }
-
-    public void ConfirmShoot()
-    {
-        attackInput = false;
-        Shoot(); // Fire the projectile when the button is released
-    }
-
-    public void CancelShot()
-    {
-        attackInput = false;
-        Destroy(bubble.gameObject);
-        holdTime = 0f;
-    }
-
-    void Update()
-    {
-        // If the fire button is held, track the hold time
-        if (attackInput)
-        {
-            holdTime += Time.deltaTime;
-            // Calculate the scale of the projectile based on hold time
-            float scaleMultiplier = Mathf.Lerp(minScale, maxScale, holdTime / maxChargeTime);
-            bubble.SetSize(scaleMultiplier);
-            bubble.transform.position = muzzle.position + muzzle.up * (scaleMultiplier * 0.5f) + muzzle.right * (scaleMultiplier * 0.5f);
-        }
     }
 
     void Shoot()
