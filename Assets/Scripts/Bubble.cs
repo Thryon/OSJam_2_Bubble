@@ -231,6 +231,10 @@ public class Bubble : MonoBehaviour
     {
         _disabled = true;
     }
+    private void Enable()
+    {
+        _disabled = false;
+    }
 
     void OnDrawGizmos()
     {
