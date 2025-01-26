@@ -15,9 +15,9 @@ TagManager:
   - BubbleCollider
   - Gun
   - Bubble
-  - 
-  - 
-  - 
+  - CollideWithBubbles
+  - Player
+  - BubbleCatcher
   - 
   - 
   - 

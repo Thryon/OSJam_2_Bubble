@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     public float bubbledRiseHeight = 1.5f;  // Timer to track stun duration
     public Transform playerCircle;
     public Renderer playerCircleRenderer;
+    public PhysicsMaterial bouncyPhysicsMaterial;
+    public Collider playerCollider;
+    public Collider bubblePusherCollider;
+    public BubbleCatcher bubbleCatcher;
     private float lastDashTime;
     private bool isStunned = false;
     private PlayerState playerState;
@@ -110,6 +114,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         playerState = GetComponent<PlayerState>();
+        bubblePusherCollider.enabled = false;
+        playerCollider.enabled = true;
+        playerCollider.material = null;
         // Freeze rotation on physics to avoid unwanted behavior
         if (rb != null)
         {
@@ -223,8 +230,10 @@ public class PlayerController : MonoBehaviour
             }
             dashInput = false;
             isDashing = true;
+            bubbleCatcher.Disabled = true;
             dashStartDirection = moveInput == Vector2.zero ? transform.forward : new Vector3(moveInput.x, 0, moveInput.y);
             dashCurrentDirection = dashStartDirection;
+            bubblePusherCollider.enabled = true;
             lastDashTime = Time.time;
         }
     }
@@ -232,7 +241,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing && Time.time >= lastDashTime + dashDuration)
         {
-            isDashing = false;
+            StopDashing();
         }
     }
     
@@ -283,6 +292,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector3.zero;// Set the stun timer to the full time (3s)
         previousLinearDamping = rb.linearDamping;
         rb.linearDamping = 0f;
+        playerCollider.material = bouncyPhysicsMaterial;
         StopDashing();
         Gun.CancelShot();
         root.DOLocalMoveY(bubbledRiseHeight, 1f).SetEase(Ease.InOutCubic);
@@ -292,6 +302,8 @@ public class PlayerController : MonoBehaviour
     private void StopDashing()
     {
         isDashing = false;
+        bubbleCatcher.Disabled = false;
+        bubblePusherCollider.enabled = false;
     }
 
     // Method to unstun the player
@@ -302,6 +314,7 @@ public class PlayerController : MonoBehaviour
         var pos = root.transform.localPosition;
         pos.y = 0f;
         root.transform.localPosition = pos;
+        playerCollider.material = null;
         rb.linearDamping = previousLinearDamping;
         transform.position += Vector3.up * bubbledRiseHeight;
         // Deactivate the bubble when the player is unstunned
