@@ -416,7 +416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f42421fe754a4414ca48ad377238c426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHP: 10
+  playerHP: 20
   currentHealth: 0
   bubblePrefab: {fileID: 6514433934641798115, guid: ad4131dc6da889e44b4eaa4a7ee846b7, type: 3}
   bubbleParent: {fileID: 713516827308477839}

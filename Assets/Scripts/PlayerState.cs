@@ -1,26 +1,28 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
-    public float playerHP = 0f;
+    public float playerHP = 20f;
     public float currentHealth;
 
     public GameObject bubblePrefab;
     public Transform bubbleParent;// Bubble prefab to spawn
     private GameObject currentBubble; // Reference to the active bubble
 
+    private float currentBubbleSize = 0f;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currentHealth = 0f;  // Initialize current health to max health
     }
-
     // Method to take damage
     public void TakeDamage(float damage)
     {
         currentHealth += damage;  // add health by damage amount
         Debug.Log($"Player hit! Current health: {currentHealth}");
-
         // Check if the player is bubbled
         if (currentHealth >= playerHP)
         {
@@ -32,7 +34,6 @@ public class PlayerState : MonoBehaviour
             GrowBubble(damage);
         }
     }
-
     private void GrowBubble(float damage)
     {
         if (currentBubble == null)
@@ -41,15 +42,15 @@ public class PlayerState : MonoBehaviour
             currentBubble = Instantiate(bubblePrefab, transform.position, Quaternion.identity, bubbleParent);
             currentBubble.transform.localScale = Vector3.zero; // Start with no size
         }
-
         // Gradually increase the bubble's size based on the damage taken
-        float growthFactor = damage * 0.1f; // Adjust the multiplier for growth rate
-        currentBubble.transform.localScale += Vector3.one * growthFactor;
+        float growthFactor = damage * 0.25f; // Adjust the multiplier for growth rate
+        currentBubbleSize += growthFactor;
 
+        currentBubble.transform.DOKill();
+        currentBubble.transform.DOScale(Vector3.one * currentBubbleSize, 0.25f).SetEase(Ease.OutBounce);
         // Keep the bubble around the player
         currentBubble.transform.position = transform.position;
     }
-
     // Method to handle player stun
     private void Bubbled()
     {
@@ -57,7 +58,13 @@ public class PlayerState : MonoBehaviour
         if (currentBubble != null)
         {
             // Optionally: Lock the bubble size when the player is bubbled
-            currentBubble.transform.localScale = Vector3.one * 3f; // Example final size
+            currentBubble.transform.localScale = Vector3.one * 5f; // Example final size
         }
+    }
+    public void KillBubble()
+    {
+        currentBubble.transform.localScale = Vector3.zero;
+        currentHealth = 0f;
+        currentBubbleSize = 0f;
     }
 }

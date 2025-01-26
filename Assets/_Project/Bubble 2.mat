@@ -184,7 +184,7 @@ Material:
     - _GridColour: {r: 1.4980394, g: 0, b: 0, a: 0.5019608}
     - _GridColour2: {r: 0, g: 0.6980393, b: 1.4980394, a: 0.019607844}
     - _NoiseAnimation: {r: 0, g: 1, b: 0, a: 0}
-    - _Position: {r: 7.43, g: 0.71, b: 4.65, a: 0}
+    - _Position: {r: 7.43, g: 0.61, b: 4.65, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Vector0: {r: 1, g: 1, b: 0, a: 0}
     - _VerticalHighlightColour: {r: 4, g: 0.1254902, b: 0, a: 0.043137256}

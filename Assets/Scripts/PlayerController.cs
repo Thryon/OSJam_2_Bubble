@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class PlayerController : MonoBehaviour
     private float lastDashTime;
     private bool isStunned = false;
     private PlayerState playerState;
+    private float stunnedTime = 3f;  // Default stun time (3 seconds)
+    private float reducedStunTime = 2f;  // Reduced stun time (2 seconds)
+    private float stunTimer = 0f;  // Timer to track stun duration
+
+    private bool isButtonPressed = false;
 
     private Vector2 moveInput;            // Left stick input
     private Vector2 lookInput;            // Right stick input
@@ -90,6 +96,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        playerState = GetComponent<PlayerState>();
         // Freeze rotation on physics to avoid unwanted behavior
         if (rb != null)
         {
@@ -99,9 +106,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (playerState != null)
+        if (playerState != null && !isStunned)
         {
-            isStunned = playerState.currentHealth >= playerState.playerHP;
+            if(playerState.currentHealth >= playerState.playerHP)
+            {
+                StunPlayer();
+            }
         }
         
         HandleMovement();
@@ -148,7 +158,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // dash logic
-        if (dashInput && Time.time > lastDashTime + dashCooldown)
+        if (!isStunned && dashInput && Time.time > lastDashTime + dashCooldown)
         {
             //Debug.Log("Dash input detected!");
             //Debug.Log($"LookDirection: {lookDirection}");
@@ -162,15 +172,30 @@ public class PlayerController : MonoBehaviour
             lastDashTime = Time.time;
         }
     }
-
     private void HandleMovement()
     {
         if (isStunned)
         {
-            Debug.Log("Player is stunned and cannot move!");
-            return;
+            // Countdown timer for the stunned state
+            stunTimer -= Time.deltaTime;
+
+            // If the player is mashing the button, reduce stun time
+            if (isButtonPressed)
+            {
+                stunTimer = Mathf.Max(stunTimer - Time.deltaTime, reducedStunTime);  // Reduce time, but never below 2 seconds
+                isButtonPressed = false;  // Reset the button press after applying reduction
+            }
+
+            // If stun time is over, unstun the player
+            if (stunTimer <= 0)
+            {
+                UnstunPlayer();
+            }
+            else
+            {
+                return;
+            }
         }
-        
         // ** Move Player with Left Stick **
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
         if (moveDirection.magnitude > 0.1f)
@@ -178,13 +203,31 @@ public class PlayerController : MonoBehaviour
             rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.deltaTime));
         }
     }
-
     private void FixedUpdate()
     {
         // Check if player is grounded using a small spherecast
         isGrounded = Physics.CheckSphere(transform.position + Vector3.up * 0.48f, 0.5f, groundLayer);
     }
+    public void StunPlayer()
+    {
+        isStunned = true;
+        stunTimer = stunnedTime;
+        rb.linearVelocity = Vector3.zero;// Set the stun timer to the full time (3s)
+        Debug.Log("Player is stunned!");
+    }
+    // Method to unstun the player
+    private void UnstunPlayer()
+    {
+        isStunned = false;
+        Debug.Log("Player is no longer stunned.");
+        // Deactivate the bubble when the player is unstunned
+        if (playerState != null)
+        {
+            // Call the PlayerState method to unstun the player
+            playerState.KillBubble();
 
+        }
+    }
     private void OnDrawGizmosSelected()
     {
         // Visualize the ground check in the editor
