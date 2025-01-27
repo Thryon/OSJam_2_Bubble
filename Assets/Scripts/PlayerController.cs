@@ -335,6 +335,7 @@ public class PlayerController : MonoBehaviour
         root.transform.localPosition = pos;
         playerCollider.material = null;
         rb.linearDamping = previousLinearDamping;
+        rb.linearVelocity = Vector3.zero;
         transform.position += Vector3.up * bubbledRiseHeight;
         // Deactivate the bubble when the player is unstunned
         if (playerState != null)
